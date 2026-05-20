@@ -10,10 +10,10 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class HorarioResponseDTO {
     private Long id;
-    private LocalTime horaIniTurno;
-    private LocalTime horaFinTurno;
-    private Long entrenadorId;
     private Long establecimientoId;
     private String diaSemana;
-    private Object entrenador;
+    private LocalTime horaApertura;
+    private LocalTime horaCierre;
+    private boolean abierto;
+    private EstablecimientoDTO establecimiento;
 }

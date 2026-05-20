@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface HorarioRepository extends JpaRepository<Horario, Long> {
-    List<Horario> findByEntrenadorId(Long entrenadorId);
-    List<Horario> findByEstablecimientoId(Long establecimientoId);
-    List<Horario> findByDiaSemana(String diaSemana);
+    List<Horario> findAllByOrderByIdAsc();
+    List<Horario> findByEstablecimientoIdOrderByIdAsc(Long establecimientoId);
+    List<Horario> findByDiaSemanaOrderByIdAsc(String diaSemana);
+    List<Horario> findByEstablecimientoIdAndDiaSemanaOrderByIdAsc(Long establecimientoId, String diaSemana);
 }

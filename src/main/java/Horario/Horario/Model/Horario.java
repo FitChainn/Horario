@@ -18,17 +18,15 @@ public class Horario {
     private Long id;
 
     @Column(nullable = false)
-    private LocalTime horaIniTurno;
-
-    @Column(nullable = false)
-    private LocalTime horaFinTurno;
-
-    @Column(nullable = false)
-    private Long entrenadorId;
-
-    @Column(nullable = false)
     private Long establecimientoId;
 
     @Column(nullable = false)
     private String diaSemana;
+
+    private LocalTime horaApertura;
+
+    private LocalTime horaCierre;
+
+    @Column(nullable = false)
+    private boolean abierto;
 }

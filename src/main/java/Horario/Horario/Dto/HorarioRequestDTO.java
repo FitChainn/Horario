@@ -12,18 +12,15 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class HorarioRequestDTO {
 
-    @NotNull(message = "La hora de inicio no puede estar vacía")
-    private LocalTime horaIniTurno;
-
-    @NotNull(message = "La hora de fin no puede estar vacía")
-    private LocalTime horaFinTurno;
-
-    @NotNull(message = "El entrenador es obligatorio")
-    private Long entrenadorId;
-
     @NotNull(message = "El establecimiento es obligatorio")
     private Long establecimientoId;
 
     @NotBlank(message = "El día de la semana es obligatorio")
     private String diaSemana;
+
+    private LocalTime horaApertura;
+
+    private LocalTime horaCierre;
+
+    private boolean abierto;
 }

@@ -29,16 +29,18 @@ public class HorarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/entrenador/{entrenadorId}")
-    public ResponseEntity<List<HorarioResponseDTO>> obtenerPorEntrenador(@PathVariable Long entrenadorId) {
-        List<HorarioResponseDTO> horarios = horarioService.obtenerPorEntrenador(entrenadorId);
+    @GetMapping("/establecimiento/{establecimientoId}")
+    public ResponseEntity<List<HorarioResponseDTO>> obtenerPorEstablecimiento(@PathVariable Long establecimientoId) {
+        List<HorarioResponseDTO> horarios = horarioService.obtenerPorEstablecimiento(establecimientoId);
         if (horarios.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(horarios);
     }
 
-    @GetMapping("/establecimiento/{establecimientoId}")
-    public ResponseEntity<List<HorarioResponseDTO>> obtenerPorEstablecimiento(@PathVariable Long establecimientoId) {
-        List<HorarioResponseDTO> horarios = horarioService.obtenerPorEstablecimiento(establecimientoId);
+    @GetMapping("/establecimiento/{establecimientoId}/dia/{diaSemana}")
+    public ResponseEntity<List<HorarioResponseDTO>> obtenerPorEstablecimientoYDia(
+            @PathVariable Long establecimientoId,
+            @PathVariable String diaSemana) {
+        List<HorarioResponseDTO> horarios = horarioService.obtenerPorEstablecimientoYDia(establecimientoId, diaSemana);
         if (horarios.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(horarios);
     }
