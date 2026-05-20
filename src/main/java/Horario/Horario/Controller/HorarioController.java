@@ -6,6 +6,7 @@ import Horario.Horario.Service.HorarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +18,13 @@ public class HorarioController {
     @Autowired
     private HorarioService horarioService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENTRENADOR', 'CLIENTE')")
     @GetMapping
     public ResponseEntity<List<HorarioResponseDTO>> obtenerTodos() {
         return ResponseEntity.ok(horarioService.obtenerTodos());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENTRENADOR', 'CLIENTE')")
     @GetMapping("/{id}")
     public ResponseEntity<HorarioResponseDTO> obtenerPorId(@PathVariable Long id) {
         return horarioService.obtenerPorId(id)
@@ -29,6 +32,7 @@ public class HorarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENTRENADOR', 'CLIENTE')")
     @GetMapping("/establecimiento/{establecimientoId}")
     public ResponseEntity<List<HorarioResponseDTO>> obtenerPorEstablecimiento(@PathVariable Long establecimientoId) {
         List<HorarioResponseDTO> horarios = horarioService.obtenerPorEstablecimiento(establecimientoId);
@@ -36,6 +40,7 @@ public class HorarioController {
         return ResponseEntity.ok(horarios);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENTRENADOR', 'CLIENTE')")
     @GetMapping("/establecimiento/{establecimientoId}/dia/{diaSemana}")
     public ResponseEntity<List<HorarioResponseDTO>> obtenerPorEstablecimientoYDia(
             @PathVariable Long establecimientoId,
@@ -45,6 +50,7 @@ public class HorarioController {
         return ResponseEntity.ok(horarios);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ENTRENADOR', 'CLIENTE')")
     @GetMapping("/dia/{diaSemana}")
     public ResponseEntity<List<HorarioResponseDTO>> obtenerPorDia(@PathVariable String diaSemana) {
         List<HorarioResponseDTO> horarios = horarioService.obtenerPorDia(diaSemana);
@@ -52,11 +58,13 @@ public class HorarioController {
         return ResponseEntity.ok(horarios);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<HorarioResponseDTO> guardar(@Valid @RequestBody HorarioRequestDTO dto) {
         return ResponseEntity.status(201).body(horarioService.guardar(dto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<HorarioResponseDTO> actualizar(
             @PathVariable Long id,
@@ -64,11 +72,10 @@ public class HorarioController {
         return ResponseEntity.ok(horarioService.actualizar(id, dto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
-        if (horarioService.obtenerPorId(id).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        if (horarioService.obtenerPorId(id).isEmpty()) return ResponseEntity.notFound().build();
         horarioService.eliminarPorId(id);
         return ResponseEntity.noContent().build();
     }
