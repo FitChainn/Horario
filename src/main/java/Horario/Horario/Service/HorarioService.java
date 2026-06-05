@@ -1,18 +1,17 @@
 package Horario.Horario.Service;
 
-import Horario.Horario.Dto.EstablecimientoDTO;
 import Horario.Horario.Dto.HorarioRequestDTO;
 import Horario.Horario.Dto.HorarioResponseDTO;
 import Horario.Horario.Model.Horario;
 import Horario.Horario.Repository.HorarioRepository;
+import Horario.Horario.WebClient.EstablecimientoClient;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,10 +24,7 @@ public class HorarioService {
     private HorarioRepository horarioRepository;
 
     @Autowired
-    private WebClient.Builder webClientBuilder;
-
-    @Value("${establecimiento-service.url}")
-    private String establecimientoServiceUrl;
+    private EstablecimientoClient establecimientoClient;
 
     private HorarioResponseDTO mapToDTO(Horario horario) {
         HorarioResponseDTO dto = new HorarioResponseDTO();
@@ -38,19 +34,7 @@ public class HorarioService {
         dto.setHoraApertura(horario.getHoraApertura());
         dto.setHoraCierre(horario.getHoraCierre());
         dto.setAbierto(horario.isAbierto());
-
-        try {
-            EstablecimientoDTO establecimiento = webClientBuilder.build()
-                    .get()
-                    .uri(establecimientoServiceUrl + "/{id}", horario.getEstablecimientoId())
-                    .retrieve()
-                    .bodyToMono(EstablecimientoDTO.class)
-                    .block();
-            dto.setEstablecimiento(establecimiento);
-        } catch (Exception e) {
-            log.warn("No se pudo obtener establecimiento con ID: {}", horario.getEstablecimientoId());
-            dto.setEstablecimiento(null);
-        }
+        dto.setEstablecimiento(establecimientoClient.obtenerEstablecimientoPorId(horario.getEstablecimientoId()));
         return dto;
     }
 
@@ -103,7 +87,7 @@ public class HorarioService {
     public HorarioResponseDTO actualizar(Long id, HorarioRequestDTO dto) {
         log.info("Actualizando horario con ID: {}", id);
         Horario horario = horarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Horario no encontrado con ID: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Horario no encontrado con ID: " + id));
         horario.setEstablecimientoId(dto.getEstablecimientoId());
         horario.setDiaSemana(dto.getDiaSemana());
         horario.setHoraApertura(dto.getHoraApertura());

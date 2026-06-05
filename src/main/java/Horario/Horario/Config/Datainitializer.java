@@ -24,6 +24,10 @@ public class Datainitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        if (horarioRepository.count() > 0) {
+            log.info(">>> DataInitializer: la BD ya tiene datos, se omite la carga inicial.");
+            return;
+        }
         log.info(">>> DataInitializer: insertando horarios del establecimiento...");
         crearHorariosEstablecimiento(1L);
         crearHorariosEstablecimiento(2L);
