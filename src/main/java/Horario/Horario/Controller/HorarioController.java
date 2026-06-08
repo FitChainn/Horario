@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +18,10 @@ import java.util.List;
 @Tag(name = "HORARIOS", description = "GESTIÓN DE HORARIOS")
 @RestController
 @RequestMapping("/v1/horarios")
+@RequiredArgsConstructor
 public class HorarioController {
 
-    @Autowired
-    private HorarioService horarioService;
+    private final HorarioService horarioService;
 
     @Operation(summary = "OBTENER TODOS LOS HORARIOS", description = "Retorna la lista de todos los horarios. Acceso: ADMIN, ENTRENADOR, CLIENTE")
     @ApiResponses({
@@ -97,7 +97,10 @@ public class HorarioController {
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<HorarioResponseDTO> guardar(@Valid @RequestBody HorarioRequestDTO dto) {
+    //mucho texto lo del swagger
+    public ResponseEntity<HorarioResponseDTO> guardar(@Valid
+                                                          @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos del horario")
+                                                          @RequestBody HorarioRequestDTO dto) {
         return ResponseEntity.status(201).body(horarioService.guardar(dto));
     }
 
