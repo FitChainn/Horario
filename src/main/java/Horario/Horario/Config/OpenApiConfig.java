@@ -1,7 +1,5 @@
 package Horario.Horario.Config;
 
-
-
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
@@ -17,10 +15,8 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI(){
         return new OpenAPI()
                 .info(new Info()
-                        .title("Horario API")
-                        .description("API DE GESTIÓN DE USUARIOS - FitChain")
                         .version("1.0.0")).servers(List.of(
-                                new Server().url("http://localhost:8086").description("Local")
+                        new Server().url("http://localhost:8086").description("Local")
                 ));
     }
 }
