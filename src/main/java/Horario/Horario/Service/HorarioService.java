@@ -39,40 +39,40 @@ public class HorarioService {
     }
 
     public List<HorarioResponseDTO> obtenerTodos() {
-        log.info("Obteniendo todos los horarios");
+        log.info("OBTENIENDO TODOS LOS HORARIOS");
         return horarioRepository.findAllByOrderByIdAsc().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     public Optional<HorarioResponseDTO> obtenerPorId(Long id) {
-        log.info("Buscando horario con ID: {}", id);
+        log.info("BUSCANDO HORARIO CON ID: {}", id);
         return horarioRepository.findById(id).map(this::mapToDTO);
     }
 
     public List<HorarioResponseDTO> obtenerPorEstablecimiento(Long establecimientoId) {
-        log.info("Buscando horarios del establecimiento ID: {}", establecimientoId);
+        log.info("BUSCANDO HORARIOS DEL ESTABLECIMIENTO ID: {}", establecimientoId);
         return horarioRepository.findByEstablecimientoIdOrderByIdAsc(establecimientoId).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<HorarioResponseDTO> obtenerPorDia(String diaSemana) {
-        log.info("Buscando horarios del día: {}", diaSemana);
+        log.info("BUSCANDO HORARIOS DEL DÍA: {}", diaSemana);
         return horarioRepository.findByDiaSemanaOrderByIdAsc(diaSemana).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<HorarioResponseDTO> obtenerPorEstablecimientoYDia(Long establecimientoId, String diaSemana) {
-        log.info("Buscando horario del establecimiento {} para el día {}", establecimientoId, diaSemana);
+        log.info("BUSCANDO HORARIO DEL ESTABLECIMIENTO {} PARA EL DÍA {}", establecimientoId, diaSemana);
         return horarioRepository.findByEstablecimientoIdAndDiaSemanaOrderByIdAsc(establecimientoId, diaSemana).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     public HorarioResponseDTO guardar(HorarioRequestDTO dto) {
-        log.info("Guardando horario para establecimiento ID: {}", dto.getEstablecimientoId());
+        log.info("GUARDANDO HORARIO PARA ESTABLECIMIENTO ID: {}", dto.getEstablecimientoId());
         Horario horario = new Horario();
         horario.setEstablecimientoId(dto.getEstablecimientoId());
         horario.setDiaSemana(dto.getDiaSemana());
@@ -80,12 +80,12 @@ public class HorarioService {
         horario.setHoraCierre(dto.getHoraCierre());
         horario.setAbierto(dto.isAbierto());
         Horario guardado = horarioRepository.save(horario);
-        log.info("Horario guardado con ID: {}", guardado.getId());
+        log.info("HORARIO GUARDADO CON ID: {}", guardado.getId());
         return mapToDTO(guardado);
     }
 
     public HorarioResponseDTO actualizar(Long id, HorarioRequestDTO dto) {
-        log.info("Actualizando horario con ID: {}", id);
+        log.info("ACTUALIZANDO HORARIO CON ID: {}", id);
         Horario horario = horarioRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Horario no encontrado con ID: " + id));
         horario.setEstablecimientoId(dto.getEstablecimientoId());
@@ -97,7 +97,7 @@ public class HorarioService {
     }
 
     public void eliminarPorId(Long id) {
-        log.info("Eliminando horario con ID: {}", id);
+        log.info("ELIMINANDO HORARIO CON ID: {}", id);
         horarioRepository.deleteById(id);
     }
 }
