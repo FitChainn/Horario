@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @Tag(name = "HORARIOS", description = "GESTIÓN DE HORARIOS")
 @RestController
 @RequestMapping("/v1/horarios")
@@ -38,6 +40,7 @@ public class HorarioController {
     @PreAuthorize("hasAnyRole('ADMIN', 'ENTRENADOR', 'CLIENTE')")
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<HorarioResponseDTO>>> obtenerTodos() {
+        log.info("GET /v1/horarios - LISTAR TODOS");
         List<EntityModel<HorarioResponseDTO>> horarios = horarioService.obtenerTodos().stream()
                 .map(assembler::toModel)
                 .toList();
@@ -53,6 +56,7 @@ public class HorarioController {
     @PreAuthorize("hasAnyRole('ADMIN', 'ENTRENADOR', 'CLIENTE')")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<HorarioResponseDTO>> obtenerPorId(@PathVariable Long id) {
+        log.info("GET /v1/horarios/{} - BUSCAR POR ID", id);
         return horarioService.obtenerPorId(id)
                 .map(dto -> ResponseEntity.ok(assembler.toModel(dto)))
                 .orElse(ResponseEntity.notFound().build());
@@ -66,6 +70,7 @@ public class HorarioController {
     @PreAuthorize("hasAnyRole('ADMIN', 'ENTRENADOR', 'CLIENTE')")
     @GetMapping("/establecimiento/{establecimientoId}")
     public ResponseEntity<CollectionModel<EntityModel<HorarioResponseDTO>>> obtenerPorEstablecimiento(@PathVariable Long establecimientoId) {
+        log.info("GET /v1/horarios/establecimiento/{} - BUSCAR POR ESTABLECIMIENTO", establecimientoId);
         List<HorarioResponseDTO> horarios = horarioService.obtenerPorEstablecimiento(establecimientoId);
         if (horarios.isEmpty()) return ResponseEntity.noContent().build();
         List<EntityModel<HorarioResponseDTO>> modelos = horarios.stream().map(assembler::toModel).toList();
@@ -83,6 +88,7 @@ public class HorarioController {
     public ResponseEntity<CollectionModel<EntityModel<HorarioResponseDTO>>> obtenerPorEstablecimientoYDia(
             @PathVariable Long establecimientoId,
             @PathVariable String diaSemana) {
+        log.info("GET /v1/horarios/establecimiento/{}/dia/{} - BUSCAR POR ESTABLECIMIENTO Y DÍA", establecimientoId, diaSemana);
         List<HorarioResponseDTO> horarios = horarioService.obtenerPorEstablecimientoYDia(establecimientoId, diaSemana);
         if (horarios.isEmpty()) return ResponseEntity.noContent().build();
         List<EntityModel<HorarioResponseDTO>> modelos = horarios.stream().map(assembler::toModel).toList();
@@ -98,6 +104,7 @@ public class HorarioController {
     @PreAuthorize("hasAnyRole('ADMIN', 'ENTRENADOR', 'CLIENTE')")
     @GetMapping("/dia/{diaSemana}")
     public ResponseEntity<CollectionModel<EntityModel<HorarioResponseDTO>>> obtenerPorDia(@PathVariable String diaSemana) {
+        log.info("GET /v1/horarios/dia/{} - BUSCAR POR DÍA", diaSemana);
         List<HorarioResponseDTO> horarios = horarioService.obtenerPorDia(diaSemana);
         if (horarios.isEmpty()) return ResponseEntity.noContent().build();
         List<EntityModel<HorarioResponseDTO>> modelos = horarios.stream().map(assembler::toModel).toList();
@@ -117,6 +124,7 @@ public class HorarioController {
     public ResponseEntity<EntityModel<HorarioResponseDTO>> guardar(@Valid
                                                                    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos del horario")
                                                                    @RequestBody HorarioRequestDTO dto) {
+        log.info("POST /v1/horarios - CREAR HORARIO establecimientoId={}", dto.getEstablecimientoId());
         HorarioResponseDTO creado = horarioService.guardar(dto);
         return ResponseEntity.status(201).body(assembler.toModel(creado));
     }
@@ -132,6 +140,7 @@ public class HorarioController {
     public ResponseEntity<EntityModel<HorarioResponseDTO>> actualizar(
             @PathVariable Long id,
             @Valid @RequestBody HorarioRequestDTO dto) {
+        log.info("PUT /v1/horarios/{} - ACTUALIZAR HORARIO", id);
         return ResponseEntity.ok(assembler.toModel(horarioService.actualizar(id, dto)));
     }
 
@@ -143,6 +152,7 @@ public class HorarioController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
+        log.info("DELETE /v1/horarios/{} - ELIMINAR HORARIO", id);
         if (horarioService.obtenerPorId(id).isEmpty()) return ResponseEntity.notFound().build();
         horarioService.eliminarPorId(id);
         return ResponseEntity.noContent().build();
