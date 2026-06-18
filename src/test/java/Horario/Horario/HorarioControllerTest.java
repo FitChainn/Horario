@@ -1,5 +1,6 @@
 package Horario.Horario;
 
+import Horario.Horario.Assembler.HorarioModelAssembler;
 import Horario.Horario.Config.SecurityConfig;
 import Horario.Horario.Controller.HorarioController;
 import Horario.Horario.Dto.EstablecimientoDTO;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(HorarioController.class)
-@Import({SecurityConfig.class, RolHeaderFilter.class})
+@Import({SecurityConfig.class, RolHeaderFilter.class, HorarioModelAssembler.class})
 @DisplayName("PRUEBAS UNITARIAS DEL CONTROLLER DE HORARIOS")
 public class HorarioControllerTest {
 
@@ -62,8 +63,8 @@ public class HorarioControllerTest {
         mockMvc.perform(get("/v1/horarios")
                         .header("X-User-Rol", "ADMIN"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].diaSemana").value("LUNES"));
+                .andExpect(jsonPath("$._embedded.horarioResponseDTOList.length()").value(1))
+                .andExpect(jsonPath("$._embedded.horarioResponseDTOList[0].diaSemana").value("LUNES"));
     }
 
     @Test
@@ -96,8 +97,8 @@ public class HorarioControllerTest {
         mockMvc.perform(get("/v1/horarios/establecimiento/1")
                         .header("X-User-Rol", "ADMIN"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].establecimientoId").value(1L));
+                .andExpect(jsonPath("$._embedded.horarioResponseDTOList.length()").value(1))
+                .andExpect(jsonPath("$._embedded.horarioResponseDTOList[0].establecimientoId").value(1L));
     }
 
     @Test
@@ -118,8 +119,8 @@ public class HorarioControllerTest {
         mockMvc.perform(get("/v1/horarios/establecimiento/1/dia/LUNES")
                         .header("X-User-Rol", "ADMIN"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].diaSemana").value("LUNES"));
+                .andExpect(jsonPath("$._embedded.horarioResponseDTOList.length()").value(1))
+                .andExpect(jsonPath("$._embedded.horarioResponseDTOList[0].diaSemana").value("LUNES"));
     }
 
     @Test
@@ -130,8 +131,8 @@ public class HorarioControllerTest {
         mockMvc.perform(get("/v1/horarios/dia/LUNES")
                         .header("X-User-Rol", "ADMIN"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].diaSemana").value("LUNES"));
+                .andExpect(jsonPath("$._embedded.horarioResponseDTOList.length()").value(1))
+                .andExpect(jsonPath("$._embedded.horarioResponseDTOList[0].diaSemana").value("LUNES"));
     }
 
     @Test
