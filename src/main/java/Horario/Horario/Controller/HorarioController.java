@@ -151,10 +151,11 @@ public class HorarioController {
     })
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<HorarioResponseDTO>> eliminar(@PathVariable Long id) {
         log.info("DELETE /v1/horarios/{} - ELIMINAR HORARIO", id);
-        if (horarioService.obtenerPorId(id).isEmpty()) return ResponseEntity.notFound().build();
+        HorarioResponseDTO horario = horarioService.obtenerPorId(id)
+                .orElseThrow(() -> new java.util.NoSuchElementException("HORARIO CON ID " + id + " NO ENCONTRADO"));
         horarioService.eliminarPorId(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(assembler.toModel(horario));
     }
 }
